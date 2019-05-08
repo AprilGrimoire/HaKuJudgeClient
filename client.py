@@ -42,11 +42,12 @@ def handle(submission):
     resp = session.get(config.address + '/submissions/{}/edit'.format(submission['id']))
     soup = BeautifulSoup(resp.text, features="lxml")
     token = soup.find('input', attrs={'name': '_token'})['value']
-    payload = {'_token': token, 'status': result['status'], 'score': result['score']}
+    payload = {'_token': token, 'status': result['status'], 'score': result['score'], 'detail': json.dumps(result['detail'])}
     if result['time']:
         payload['time'] = round(result['time'] * 1000)
     if result['memory']:
         payload['memory'] = round(result['memory'] * 1024)
+    print(payload)
     resp = session.patch(config.address + '/submissions/{}'.format(submission['id']),
                          data=payload)
 
