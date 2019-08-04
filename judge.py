@@ -44,7 +44,7 @@ def judge(problemPath, targetPath):
             score += testdata["score"] * result["score"]
             if result["status"] != "Accepted" and "status" not in summary:
                 summary["status"] = result["status"]
-            if testdata["time"] is None or summary["time"] is None:
+            if result["time"] is None or summary["time"] is None:
                 summary["time"] = None
             else:
                 summary["time"] = max(summary["time"], result["time"])

@@ -12,6 +12,9 @@ import json
 tooMuchTime = False
 runtimeError = False
 
+"""
+@param timeout: timeout int second
+"""
 def runTarget(dataInPath, dataAnsPath, timeout):
     testdataIn = open(dataInPath, "r")
     testdataOut = open("target.out", "w")
@@ -26,6 +29,10 @@ def runTarget(dataInPath, dataAnsPath, timeout):
     testdataIn.close()
     testdataOut.close()
 
+"""
+@param timeLimit: timelimit in ms
+@param memoryLimit: memorylimit in byte
+"""
 def _execute(dataInPath, dataAnsPath, targetPath, timeLimit, memoryLimit, queue):
     dataInPath = os.path.abspath(dataInPath)
     dataAnsPath = os.path.abspath(dataAnsPath)
@@ -36,7 +43,9 @@ def _execute(dataInPath, dataAnsPath, targetPath, timeLimit, memoryLimit, queue)
     os.system("rm -rf work")
     os.system("cp -r virtualroot work")
     os.system("cp {} work/judge/".format(targetPath))
-    runTarget(dataInPath, dataAnsPath, timeLimit * 2)
+    runTarget(dataInPath, dataAnsPath, timeLimit / 1000 * 2)
+    # convert ms to s
+    # real time can be at most 2 * user time
     usage = resource.getrusage(resource.RUSAGE_CHILDREN)
     result = dict()
     result["memory"] = usage[2]
@@ -61,7 +70,12 @@ def _execute(dataInPath, dataAnsPath, targetPath, timeLimit, memoryLimit, queue)
         result["score"] = 0
     queue.put(result)
 
+"""
+@param timeLimit: timelimit in ms
+@param memoryLimit: memorylimit in byte
+"""
 def execute(dataInPath, dataAnsPath, targetPath, timeLimit, memoryLimit):
+    # a new process needs to be started to get time and memory usage
     q = multiprocessing.Queue()
     p = multiprocessing.Process(target=_execute, args=(dataInPath, dataAnsPath, targetPath, timeLimit, memoryLimit, q))
     p.start()
