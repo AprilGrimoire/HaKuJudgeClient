@@ -31,7 +31,7 @@ def runTarget(dataInPath, dataAnsPath, timeout):
 
 """
 @param timeLimit: timelimit in ms
-@param memoryLimit: memorylimit in byte
+@param memoryLimit: memorylimit in KB
 """
 def _execute(dataInPath, dataAnsPath, targetPath, timeLimit, memoryLimit, queue):
     dataInPath = os.path.abspath(dataInPath)
